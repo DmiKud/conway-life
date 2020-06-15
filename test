@@ -1,0 +1,61 @@
+import matplotlib.pyplot as plt
+
+
+def glader(a=0, b=0):  # а-горизонтальное смещение, b - фаза
+    if b == 0:
+        return [(2 + a, 0), (2 + a, 1), (2 + a, 2), (1 + a, 2), (0 + a, 1)]
+    elif b == 1:
+        return [(1 + a, 0), (2 + a, 1), (3 + a, 1), (1 + a, 2), (2 + a, 2)]
+
+
+def square(a=0):
+    return [(1+a, 1), (2+a, 1), (1+a , 2), (2+a, 2)]
+
+
+def stick(a=0):
+    return [(1 + a, 1), (1 + a, 2), (1 + a, 3)]
+
+
+def count_neighbors(board): 
+    counted_neighbors = {}
+    for cellI in range(len(board)):
+        x, y = board[cellI]
+        neighbors = [(x + i, y + j) for i in (-1, 0, 1) for j in (-1, 0, 1) if not i == j == 0]
+        for el in neighbors:
+            if el in counted_neighbors:
+                counted_neighbors[el] += 1
+            else:
+                counted_neighbors[el] = 1
+    return counted_neighbors
+
+
+def natural_selection(count_neighbors):
+    new_board = []
+    for cell in count_neighbors.keys():
+        if count_neighbors[cell] in (2, 3) and cell in board:
+            new_board.append(cell)
+        elif count_neighbors[cell] == 3:
+            new_board.append(cell)
+    return new_board
+
+
+def show_plot(board):
+    x_coord = []
+    y_coord = []
+    for i in range(len(board)):
+        a, b = board[i]
+        x_coord.append(a)
+        y_coord.append(b)
+    plt.scatter(x_coord, y_coord)
+    plt.show()
+    return
+
+
+board = glader()+square(-7)+ stick(12)
+show_plot(board)
+n = 15
+while n > 0:
+    new_board = natural_selection(count_neighbors(board))
+    show_plot(new_board)
+    board = new_board
+    n -= 1
